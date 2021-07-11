@@ -27,7 +27,7 @@ export const Button = styled.button`
 // Create an Input component that'll render an <input> tag with some styles
 export const Input = styled.input`
   font-size: 1em;
-  padding: 0em 1em;
+  padding: 0em 0.2em;
   color: ${props => props.inputColor || "palevioletred"};
   background: papayawhip;
   border: 2px solid palevioletred;

@@ -1,63 +1,78 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { GlobalStyle } from '../theme/globalStyle'
 import { Wrapper, Button, Input } from '../theme/appStyled';
 import dogApi, {API_DEFAULT_PARAMS} from '../apis/dogApi'
 
 const App = () => {
-    const [dogs, setDogs] = useState([])
+    const [breeds, setBreeds] = useState([])
+    const [dog, setDog] = useState([])
     const [query, setQuery] = useState("")
 
-    const fetchData = async () => {
-        console.log("fetchData query ", query)
-        const res = await dogApi.get('/search', {
-            params:{
-                ...API_DEFAULT_PARAMS,
-                q:query
-            }
+    useEffect (()=> {
+        const fetchBreeds = async() => {
+            const res = await dogApi.get('/breeds', {
+                params:{
+                    ...API_DEFAULT_PARAMS
+                }
+            })
+            console.log("fetchBreeds ", res.data)
+            setBreeds(res.data)
+            return res.data
+        }
+        fetchBreeds()
+    }, [])
+
+    const renderBreeds = () => {
+        return breeds.map(breed => {
+            return (
+                <li key={breed.id}>{breed.name}</li>
+            )
         })
-        console.log("fetchData res.data ", res.data[0])
-        setDogs(res.data[0])
-        return res.data[0]
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        fetchData()
+        findBreed()
+    }
+    const findBreed = () => {
+        const breed = breeds.find(breed => breed.name === query)
+        setDog(breed)
     }
 
-    const displayInfo = () => {
-        console.log("displayInfo ", dogs.breeds)
-        if (dogs.breeds === undefined || !dogs.breeds.length ){
-            return (
-                <div><p>No info availabel. Just click the button.</p></div>
-            )
-        }
-        return (
-            <div>
-                <p>name: { typeof dogs.breeds[0] === undefined || typeof dogs.breeds[0].name === undefined ? "Not available" : dogs.breeds[0].name }</p>
-                {/* <p>name: {dogs.breed[0].name}</p> */}
-                <p>bred for: {dogs.breeds[0].bred_for === undefined ? "Not available"  : dogs.breeds[0].bred_for}</p>
-                <p>breed group: {dogs.breeds[0].breed_group}</p>
-                <p>temperament: {dogs.breeds[0].temperament}</p>
-                <p>life span: {dogs.breeds[0].life_span}</p>
-            </div>
-        )
-    }
     const displayDog = (url) => {
         window.location.assign(url)
     } 
+
+    const displayBreed = () => {
+        
+        return (
+            <div>
+                <p>name: {dog.name}</p>
+                <p>bred for: {dog.bred_for}</p>
+                <p>breed group: {dog.breed_group}</p>
+                <p>temperament: {dog.temperament}</p>
+                <p>life span: {dog.life_span}</p>
+                <p>image url: { dog.image &&  dog.image.url }</p>
+            </div>
+        )
+    }
+
     return (
         <>
         <Wrapper>
             <GlobalStyle />
                 <form onSubmit={handleSubmit}>
+                    <label>Enter the Breed Name:  </label>
                     <Input inputColor="rebeccapurple"  type="text" value={query} onChange={e => setQuery(e.target.value)} />
                 </form>
-                <h3>Result</h3>
-                {displayInfo()}
-                <Button onClick={()=>displayDog(dogs.url)}>Click for Dog Image</Button>
+                <h4>Search Result</h4>
+                {displayBreed()}
+                <Button onClick={()=>displayDog(dog.image.url)}>Click for Dog Image</Button>
+                <h3>Breed Names</h3>
+                <ul>{renderBreeds()}</ul>
+                
         </Wrapper>
         </>
     );

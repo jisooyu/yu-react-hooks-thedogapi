@@ -5,6 +5,6 @@ export const API_DEFAULT_PARAMS = {
     headers: { "Content-Type": "multipart/form-data" }
 }
 export default axios.create({
-    baseURL: "https://api.TheDogAPI.com/v1/images/",
+    baseURL: "https://api.TheDogAPI.com/v1/",
 })
 
