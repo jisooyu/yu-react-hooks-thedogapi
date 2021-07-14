@@ -1,8 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { Container, Col, Row } from 'reactstrap';
 
-import { GlobalStyle } from '../theme/globalStyle'
-import { Wrapper  } from '../theme/appStyled';
 import dogApi, {API_DEFAULT_PARAMS} from '../apis/dogApi'
 import BreedList from './breeds/BreedList'
 
@@ -25,18 +24,21 @@ const App  = () => {
     const renderBreeds = () => {
         return breeds.map(breed => {
             return (
-                <BreedList breed={breed} key={breed.id} />
+                <Col sm={{ size: 3, order: 2, offset: 1 }}>
+                    <BreedList breed={breed} key={breed.id} />
+                </Col>
             )
         })
     }
     return (
-       <>
-        <Wrapper>
-            <GlobalStyle />
-                <h3>Dog Breeds</h3>
-                {renderBreeds()}
-        </Wrapper>
-        </>
+        <div>
+            <h2 style={{color: "blue", textAlign:"center"}} >Dog Breeds</h2>
+            <Container fluid>
+                <Row>
+                    {renderBreeds()}
+                </Row>
+            </Container>
+        </div>
     )
 }
 
